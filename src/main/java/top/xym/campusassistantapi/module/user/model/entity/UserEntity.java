@@ -32,6 +32,9 @@ public class UserEntity {
     @TableField("avatar")
     private String avatar;
 
+    @TableField("gender")
+    private Integer gender;
+
     @TableField("status")
     private Integer status;
 

@@ -35,4 +35,15 @@ public class Knife4jConfig {
                 .packagesToScan(packagedToMatch).build();
     }
 
+    @Bean
+    public GroupedOpenApi userApi() {
+        String[] paths = {"/**"};
+        String[] packagedToMatch = {"top.xym.campusassistantapi.module.user"};
+        return GroupedOpenApi.builder()
+                .group("2")
+                .displayName("User API")
+                .pathsToMatch(paths)
+                .packagesToScan(packagedToMatch).build();
+    }
+
 }
