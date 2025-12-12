@@ -16,7 +16,7 @@ import top.xym.campusassistantapi.common.utils.SecurityUtils;
  * 用户控制器
  */
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
 @Tag(name = "用户管理", description = "用户管理相关接口")
 public class UserController {
@@ -31,7 +31,7 @@ public class UserController {
         return Result.success(user);
     }
 
-    @GetMapping("/user-info")
+    @GetMapping("/me")
     @Operation(summary = "获取当前登录用户信息")
     public Result<UserVO> getUserInfo() {
         Long userId = SecurityUtils.getCurrentUserId();
@@ -39,7 +39,7 @@ public class UserController {
         return Result.success(userInfo);
     }
 
-    @PutMapping("/update-profile")
+    @PutMapping("/me/profile")
     @Operation(summary = "修改个人信息")
     public Result<String> updateProfile(@Validated @RequestBody UserEditDTO dto) {
         Long userId = SecurityUtils.getCurrentUserId();

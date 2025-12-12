@@ -77,9 +77,9 @@ public class SecurityConfig {
                 // 配置请求授权
                 .authorizeHttpRequests(auth -> auth
                         // 放行登录认证接口（只放行登录相关接口）
-                        .requestMatchers("/api/auth/login").permitAll()
-                        .requestMatchers("/api/auth/sms-login").permitAll()
-                        .requestMatchers("/api/auth/send-sms-code").permitAll()
+                        .requestMatchers("/api/v1/auth/sessions").permitAll()
+                        .requestMatchers("/api/v1/auth/sessions/sms").permitAll()
+                        .requestMatchers("/api/v1/auth/sms-codes").permitAll()
                         // 放行 Knife4j 文档
                         .requestMatchers("/doc.html", "/webjars/**", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
                         // 放行健康检查

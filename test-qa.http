@@ -1,0 +1,8 @@
+### 流式多模态问答
+POST http://localhost:6060/api/v1/qna/stream
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMiIsImlhdCI6MTc2NTUwMTkyOSwiZXhwIjoxNzY1NTg4MzI5fQ.fiSeyC7jhvl3ymMeSKCdHhF9GX4DNv_8FtU354Ti_Ms
+
+{
+  "question": "什么是Spring AI？请简单介绍一下"
+}

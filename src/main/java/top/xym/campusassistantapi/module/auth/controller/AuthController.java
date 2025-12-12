@@ -20,20 +20,20 @@ import top.xym.starter.common.result.Result;
 @Tag(name = "认证管理", description = "登录、登出等认证相关接口")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/auth")
+@RequestMapping("/api/v1/auth")
 @Validated
 public class AuthController {
 
     private final AuthService authService;
 
-    @PostMapping("/login")
+    @PostMapping("/sessions")
     @Operation(summary = "账号密码登录")
     public Result<TokenVO> login(@Validated @RequestBody LoginDTO dto) {
         TokenVO token = authService.login(dto);
         return Result.success(token);
     }
 
-    @PostMapping("/send-sms-code")
+    @PostMapping("/sms-codes")
     @Operation(summary = "发送短信验证码")
     public Result<String> sendSmsCode(
             @Parameter(description = "手机号")
@@ -43,14 +43,14 @@ public class AuthController {
         return Result.success();
     }
 
-    @PostMapping("/sms-login")
+    @PostMapping("/sessions/sms")
     @Operation(summary = "短信验证码登录")
     public Result<TokenVO> smsLogin(@Validated @RequestBody SmsLoginDTO dto) {
         TokenVO token = authService.smsLogin(dto);
         return Result.success(token);
     }
 
-    @PostMapping("/logout")
+    @DeleteMapping("/sessions/current")
     @Operation(summary = "登出")
     public Result<Void> logout() {
         Long userId = SecurityUtils.getCurrentUserId();

@@ -46,4 +46,15 @@ public class Knife4jConfig {
                 .packagesToScan(packagedToMatch).build();
     }
 
+    @Bean
+    public GroupedOpenApi chatApi() {
+        String[] paths = {"/**"};
+        String[] packagedToMatch = {"top.xym.campusassistantapi.module.chat"};
+        return GroupedOpenApi.builder()
+                .group("3")
+                .displayName("Chat API")
+                .pathsToMatch(paths)
+                .packagesToScan(packagedToMatch).build();
+    }
+
 }
