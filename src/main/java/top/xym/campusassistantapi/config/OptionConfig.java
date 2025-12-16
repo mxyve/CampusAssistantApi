@@ -2,7 +2,9 @@ package top.xym.campusassistantapi.config;
 
 import com.alibaba.cloud.ai.dashscope.api.DashScopeApi;
 import com.alibaba.cloud.ai.dashscope.api.DashScopeResponseFormat;
+import com.alibaba.cloud.ai.dashscope.chat.DashScopeChatModel;
 import com.alibaba.cloud.ai.dashscope.chat.DashScopeChatOptions;
+import com.alibaba.cloud.ai.dashscope.spec.DashScopeApiSpec;
 import lombok.Data;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.model.ChatModel;
@@ -16,7 +18,7 @@ import java.util.List;
 @Configuration
 @ConfigurationProperties(prefix = "spring.ai.dashscope.chat.options")
 public class OptionConfig {
-    private DashScopeApi.ChatModel model;
+    private String  model;
     private Double temperature;
     private Integer seed;
     private Double topP;
@@ -29,13 +31,13 @@ public class OptionConfig {
     private Boolean enableThinking;
     private Boolean multiModel;
     private DashScopeResponseFormat responseFormat;
-    private List<DashScopeApi.FunctionTool> tools;
+    private List<DashScopeApiSpec.FunctionTool> tools;
     private Object toolChoice;
 
     @Bean
     public DashScopeChatOptions dashScopeChatOptions() {
         return DashScopeChatOptions.builder()
-                .withModel(model.getValue())
+                .withModel(model)
                 .withTemperature(temperature)
                 .withSeed(seed)
                 .withTopP(topP)

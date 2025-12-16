@@ -5,6 +5,7 @@ import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
+import top.xym.campusassistantapi.module.chat.dto.MultiModalQaRequest;
 import top.xym.campusassistantapi.module.chat.dto.QaStreamResponse;
 
 /**
@@ -56,23 +57,36 @@ public class AIQnaService {
     /**
      * 多模块流式问答
      */
-    public Flux<QaStreamResponse> streamQa(String question) {
-        String promptTemplate = """
-                你是一个多模态AI助手，请根据以下提问内容提供准确、简洁的回答：
-                提问：%s
-                要求：回答分段落逐句返回，避免冗长，确保流式输出流畅。
-                """;
+    public Flux<QaStreamResponse> streamQa(MultiModalQaRequest request) {
 
-        String prompt = promptTemplate.formatted(question);
+        // 构建多模态 Prompt（融合文本+图片）
+        StringBuilder promptBuilder = new StringBuilder();
+        promptBuilder.append("你是一个多模态AI助手，请根据以下提问内容提供准确、简洁的回答：\n");
+        promptBuilder.append("文本提问：").append(request.getQuestion()).append("\n");
 
-        // 调用大模型流式响应
+        // 拼接图片 URL (模型自动解析)
+        if (request.getImageUrls() != null && !request.getImageUrls().isEmpty()) {
+            promptBuilder.append("图片参考地址：").append(String.join("、",request.getImageUrls())).append("\n");
+        }
+
+        promptBuilder.append("要求：回答分段落逐句返回，避免冗长，确保流式输出流畅。");
+        String prompt = promptBuilder.toString();
+
+        // 调用多模态模型（已开启multiModel=true）
         Flux<ChatResponse> chatResponseFlux = chatClient.prompt(prompt).stream().chatResponse();
 
-        // 转换为统一的 QaStreamResponse 格式
+        // 转换响应格式（标记图片解析内容）
         return chatResponseFlux
-                .map(response -> QaStreamResponse.content(
-                        response.getResult().getOutput().getText()
-                ))
+                .map(response -> {
+                    String content = response.getResult().getOutput().getText();
+                    // 给图片解析内容加标记，方便前端区分
+                    if (request.getImageUrls() != null && !request.getImageUrls().isEmpty()) {
+                        return QaStreamResponse.content("[图片解析]" + content);
+                    } else {
+                        return QaStreamResponse.content(content);
+                    }
+                })
+                .filter(qa -> qa.getContent() != null && !qa.getContent().trim().isEmpty()) // 过滤空内容
                 .concatWith(Flux.just(QaStreamResponse.end())); // 结束标记
     }
 }

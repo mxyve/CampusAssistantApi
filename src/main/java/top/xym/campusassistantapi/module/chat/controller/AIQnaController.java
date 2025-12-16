@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
-import top.xym.campusassistantapi.module.chat.dto.QaRequest;
+import top.xym.campusassistantapi.module.chat.dto.MultiModalQaRequest;
 import top.xym.campusassistantapi.module.chat.dto.QaStreamResponse;
 import top.xym.campusassistantapi.module.chat.service.AIQnaService;
 import top.xym.starter.common.result.Result;
@@ -51,10 +51,10 @@ public class AIQnaController {
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
     public Flux<QaStreamResponse> streamQa(
-            @Valid @RequestBody QaRequest request,
+            @Valid @RequestBody MultiModalQaRequest request,
             HttpServletResponse response) { // 注入响应对象
         response.setCharacterEncoding("UTF-8");
-        return qaService.streamQa(request.getQuestion());
+        return qaService.streamQa(request);
     }
 
 }

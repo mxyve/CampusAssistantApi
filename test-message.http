@@ -1,0 +1,15 @@
+### 流式发送消息（核心测试：对应 POST /api/messages/stream）
+POST http://localhost:6060/api/v1/messages/stream
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMiIsImlhdCI6MTc2NTc2OTg0NywiZXhwIjoxNzY1ODU2MjQ3fQ.Y8u1KOAyKqozPlfzk90d76QaayUch2jj-NpG-DtfRb0
+
+{
+  "sessionId": 2,
+  "modelName": "qwen-plus",
+  "content": "前端怎么渲染流式问答"
+}
+
+### 查询会话消息历史（辅助测试：验证消息是否保存）
+GET http://localhost:6060/api/v1/messages/session/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI3IiwiaWF0IjoxNzYzNTY3NTU0LCJleHAiOjE3NjM2NTM5NTR9.j-XAJ4klJ5iIPLTP7vi0WyXgK2u-YAY3o4ki-PaKp8Q
+

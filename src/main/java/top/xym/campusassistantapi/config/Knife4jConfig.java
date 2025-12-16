@@ -57,4 +57,48 @@ public class Knife4jConfig {
                 .packagesToScan(packagedToMatch).build();
     }
 
+    @Bean
+    public GroupedOpenApi sessionApi() {
+        String[] paths = {"/**"};
+        String[] packagedToMatch = {"top.xym.campusassistantapi.module.session"};
+        return GroupedOpenApi.builder()
+                .group("4")
+                .displayName("Session API")
+                .pathsToMatch(paths)
+                .packagesToScan(packagedToMatch).build();
+    }
+
+    @Bean
+    public GroupedOpenApi messageApi() {
+        String[] paths = {"/**"};
+        String[] packagedToMatch = {"top.xym.campusassistantapi.module.message"};
+        return GroupedOpenApi.builder()
+                .group("5")
+                .displayName("Message API")
+                .pathsToMatch(paths)
+                .packagesToScan(packagedToMatch).build();
+    }
+
+    @Bean
+    public GroupedOpenApi studyApi() {
+        String[] paths = {"/**"};
+        String[] packagedToMatch = {"top.xym.campusassistantapi.module.study"};
+        return GroupedOpenApi.builder()
+                .group("6")
+                .displayName("Study API")
+                .pathsToMatch(paths)
+                .packagesToScan(packagedToMatch).build();
+    }
+
+    @Bean
+    public GroupedOpenApi agentApi() {
+        String[] paths = {"/**"};
+        String[] packagedToMatch = {"top.xym.campusassistantapi.module.agent"};
+        return GroupedOpenApi.builder()
+                .group("7")
+                .displayName("Agent API")
+                .pathsToMatch(paths)
+                .packagesToScan(packagedToMatch).build();
+    }
+
 }
