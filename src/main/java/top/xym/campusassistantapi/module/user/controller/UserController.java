@@ -6,10 +6,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import top.xym.campusassistantapi.module.user.model.dto.UserDTO;
+import org.springframework.web.multipart.MultipartFile;
 import top.xym.campusassistantapi.module.user.model.dto.UserEditDTO;
 import top.xym.campusassistantapi.module.user.model.vo.UserVO;
 import top.xym.campusassistantapi.module.user.service.UserService;
+import top.xym.campusassistantapi.service.OssService;
 import top.xym.starter.common.result.Result;
 import top.xym.campusassistantapi.common.utils.SecurityUtils;
 /**
@@ -23,6 +24,7 @@ public class UserController {
 
     private final UserService userService;
 
+    private final OssService ossService ;
 
     @GetMapping("/{id}")
     @Operation(summary = "根据用户 ID 获取用户信息")
@@ -47,5 +49,11 @@ public class UserController {
         return Result.success("修改成功");
     }
 
+    @PostMapping("/me/image")
+    @Operation(summary = "上传图片（头像专用）")
+    public Result<String> uploadAvatar(@RequestParam("file") MultipartFile file) {
+        String imageUrl = ossService.uploadAvatar(file);
+        return Result.success(imageUrl);
+    }
 
 }
