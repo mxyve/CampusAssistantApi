@@ -13,6 +13,7 @@ import top.xym.campusassistantapi.common.exception.ServerException;
 import top.xym.campusassistantapi.common.utils.JwtUtils;
 import top.xym.campusassistantapi.infrastructure.sms.SmsProvider;
 import top.xym.campusassistantapi.module.auth.model.dto.LoginDTO;
+import top.xym.campusassistantapi.module.auth.model.dto.ResetPasswordDTO;
 import top.xym.campusassistantapi.module.auth.model.dto.SmsLoginDTO;
 import top.xym.campusassistantapi.module.user.mapper.UserMapper;
 import top.xym.campusassistantapi.module.user.model.entity.UserEntity;
@@ -128,5 +129,48 @@ public class AuthServiceImpl implements AuthService {
             log.info("用户 {} 登出成功", userId);
         }
     }
+
+    /**
+     * 重置密码（通过短信验证码）
+     */
+    @Override
+    public void resetPasswordBySms(ResetPasswordDTO dto) {
+        // 1. 验证验证码
+        String smsCodeKey = RedisKeys.getSmsCodeKey(dto.getMobile());
+        String cacheCode = redisCache.get(smsCodeKey, String.class);
+        if (StrUtil.isBlank(cacheCode)) {
+            throw new ServerException("验证码已过期，请重新获取");
+        }
+        if (!cacheCode.equals(dto.getCode())) {
+            throw new ServerException("验证码错误");
+        }
+
+        // 2. 查询用户（确保用户存在）
+        LambdaQueryWrapper<UserEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(UserEntity::getMobile, dto.getMobile());
+        UserEntity user = userMapper.selectOne(wrapper);
+        if (user == null) {
+            throw new ServerException("用户不存在，请先完成短信登录注册");
+        }
+
+        // 3. 检查用户状态
+        if (user.getStatus() == 0) {
+            throw new ServerException("用户已被禁用，无法重置密码");
+        }
+
+        // 4. 加密新密码并更新
+        String encodePassword = passwordEncoder.encode(dto.getNewPassword());
+        user.setPassword(encodePassword);
+        userMapper.updateById(user);
+
+        // 5. 删除已使用的验证码（防止重复使用）
+        redisCache.delete(smsCodeKey);
+
+        // 6. 登出旧Token（安全：重置密码后失效旧登录态）
+        logoutByUserId(user.getId());
+
+        log.info("用户 {}（手机号：{}）密码重置成功", user.getId(), dto.getMobile());
+    }
+
 
 }

@@ -9,6 +9,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import top.xym.campusassistantapi.common.utils.SecurityUtils;
 import top.xym.campusassistantapi.module.auth.model.dto.LoginDTO;
+import top.xym.campusassistantapi.module.auth.model.dto.ResetPasswordDTO;
 import top.xym.campusassistantapi.module.auth.model.dto.SmsLoginDTO;
 import top.xym.campusassistantapi.module.auth.model.vo.TokenVO;
 import top.xym.campusassistantapi.module.auth.service.AuthService;
@@ -56,6 +57,13 @@ public class AuthController {
         Long userId = SecurityUtils.getCurrentUserId();
         authService.logoutByUserId(userId);
         return Result.success();
+    }
+
+    @PostMapping("/reset-password")
+    @Operation(summary = "短信验证码重置密码")
+    public Result<Void> resetPassword(@Validated @RequestBody ResetPasswordDTO dto) {
+        authService.resetPasswordBySms(dto);
+        return Result.success("密码重置成功", null);
     }
 
 }

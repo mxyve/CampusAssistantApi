@@ -1,6 +1,7 @@
 package top.xym.campusassistantapi.module.auth.service;
 
 import top.xym.campusassistantapi.module.auth.model.dto.LoginDTO;
+import top.xym.campusassistantapi.module.auth.model.dto.ResetPasswordDTO;
 import top.xym.campusassistantapi.module.auth.model.dto.SmsLoginDTO;
 import top.xym.campusassistantapi.module.auth.model.vo.TokenVO;
 
@@ -12,8 +13,8 @@ public interface AuthService {
     /**
      * 账号密码登录
      *
-     * @Param dto 登录信息
      * @return Token
+     * @Param dto 登录信息
      */
     TokenVO login(LoginDTO dto);
 
@@ -39,4 +40,10 @@ public interface AuthService {
      */
     void logoutByUserId(Long userId);
 
+    /**
+     * 短信验证码重置密码
+     * @param dto 重置密码参数
+     */
+    void resetPasswordBySms(ResetPasswordDTO dto);
 }
+
