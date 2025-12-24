@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import top.xym.campusassistantapi.common.model.dto.PageResponse;
 import top.xym.campusassistantapi.module.session.model.dto.SessionCreateRequest;
 import top.xym.campusassistantapi.module.session.model.dto.SessionResponse;
+import top.xym.campusassistantapi.module.session.model.dto.SessionUpdateTitleRequest;
 import top.xym.campusassistantapi.module.session.service.SessionService;
 import top.xym.starter.common.result.Result;
 
@@ -63,4 +64,25 @@ public class SessionController {
         return Result.success("会话及消息删除成功", null);
     }
 
+    @PutMapping("/{sessionId}/title")
+    @Operation(summary = "修改会话标题", description = "修改当前登录用户指定会话的标题")
+    public Result<SessionResponse> updateSessionTitle(
+            @PathVariable @Schema(description = "会话ID") Long sessionId,
+            @Valid @RequestBody SessionUpdateTitleRequest request
+            ) {
+        Long userId = getCurrentUserId();
+        SessionResponse session = sessionService.updateSessionTitle(sessionId, userId, request);
+        return Result.success("更新会话标题成功", session);
+    }
+
+    @PostMapping("/{sessionId}/auto-title")
+    @Operation(summary = "自动生成会话标题", description = "根据用户第一条消息生成并更新会话标题")
+    public Result<SessionResponse> generateSessionTitle(
+            @PathVariable Long sessionId,
+            @RequestParam String userFirstMessage // 用户第一条提问内容
+    ) {
+        Long userId = getCurrentUserId();
+        SessionResponse session = sessionService.generateSessionTitle(sessionId, userId, userFirstMessage);
+        return Result.success("生成会话标题成功", session);
+    }
 }

@@ -86,7 +86,6 @@ public class MessageService {
         }
     }
 
-    // 新增：单独的会话最后消息更新方法（仅在流式结束后调用）
     private void updateSessionLastMessage(Long sessionId, String fullContent) {
         try {
             sessionService.updateLastMessage(sessionId, fullContent);
